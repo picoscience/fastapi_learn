@@ -5,6 +5,21 @@ from middlewares.error_handler import ErrorHandler
 from routers.movie import movie_router
 from routers.user import user_router
 
+app = FastAPI()
+app.title = 'Documentación con FastAPI'
+app.version = '0.0.1'
+
+app.add_middleware(ErrorHandler)
+app.include_router(movie_router)
+app.include_router(user_router)
+
+Base.metadata.create_all(bind=engine)
+
+
+@app.get('/',tags=['Home'])
+def message():
+    return HTMLResponse('<h1 style=color:black>Hellow World!</h1>')
+
 """
 uvicorn main:app --reload --port 5000 --host 0.0.0.0
 VALIDACION: Parametros Query, Path y Field(clases, esquemas)
@@ -30,19 +45,3 @@ SQLModel (facilidad creacion esquemas y modelos)
 https://sqlmodel.tiangolo.com/
 
 """
-
-app = FastAPI()
-app.title = 'Documentación con FastAPI'
-app.version = '0.0.1'
-
-app.add_middleware(ErrorHandler)
-app.include_router(movie_router)
-app.include_router(user_router)
-
-Base.metadata.create_all(bind=engine)
-
-
-@app.get('/',tags=['Home'])
-def message():
-    return HTMLResponse('<h1 style=color:black>Hellow World!</h1>')
-
