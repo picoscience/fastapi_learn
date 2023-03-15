@@ -49,7 +49,7 @@ def get_movie(id: int = Path(ge=1,le=2000)) -> Movie:
 @movie_router.get('/movies/',tags=['Movies'],response_model=List[Movie])
 def get_movies_by_category(category: str = Query(min_length=5, max_length=15)) -> List[Movie]:
     db = Session()
-    result = db.query(MovieModel).filter(MovieModel.category == category).all()
+    result = MovieService(db).get_movie_by_category(category=category)
     if not result:
         return JSONResponse(content={'message':'No encontrado'},status_code=404)
     return JSONResponse(content=jsonable_encoder(result),status_code=200)
