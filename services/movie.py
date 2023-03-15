@@ -22,3 +22,13 @@ class MovieService():
         self.db.add(new_movie)
         self.db.commit()
         return
+    
+    def update_movie(self, id, data):
+        movie = self.db.query(MovieModel).filter(MovieModel.id == id).first()
+        movie.title = data.title
+        movie.overview = data.overview
+        movie.year = data.year
+        movie.rating = data.rating
+        movie.category = data.category
+        self.db.commit()
+        return
