@@ -3,7 +3,6 @@ from fastapi import Body, Path, Query, Depends
 from fastapi.responses import JSONResponse
 from typing import List
 from config.database import Session
-from models.movie import Movie as MovieModel
 from fastapi.encoders import jsonable_encoder
 from middlewares.jwtbearer import JWTBearer
 from services.movie import MovieService
@@ -51,9 +50,8 @@ def update_movie(id:int = Path(ge=1,le=2000),movie:Movie = Body()) -> dict:
 @movie_router.delete('/movies/{id}',tags=['Movies'], response_model=dict,status_code=200)
 def delete_movie(id:int) -> dict:
     db = Session()
-    result = db.query(MovieModel).filter(MovieModel.id == id).first()
+    result = MovieService(db).get_movie(id=id)
     if not result:
         return JSONResponse(content={'message':'No encontrado'},status_code=404)
-    db.delete(result)
-    db.commit()
+    MovieService(db).delete_movie(id=id)
     return JSONResponse(content={'message':'Se ha eliminado la pelicula'},status_code=200)
